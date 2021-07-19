@@ -28,22 +28,6 @@ namespace Google\Site_Kit_Dependencies;
 class Google_Service_GoogleAnalyticsAdmin_Resource_PropertiesIosAppDataStreams extends \Google\Site_Kit_Dependencies\Google_Service_Resource
 {
     /**
-     * Creates an iOS app data stream with the specified location and attributes.
-     * (iosAppDataStreams.create)
-     *
-     * @param string $parent Required. The parent resource where this ios app data
-     * stream will be created. Format: properties/123
-     * @param Google_Service_GoogleAnalyticsAdmin_GoogleAnalyticsAdminV1alphaIosAppDataStream $postBody
-     * @param array $optParams Optional parameters.
-     * @return Google_Service_GoogleAnalyticsAdmin_GoogleAnalyticsAdminV1alphaIosAppDataStream
-     */
-    public function create($parent, \Google\Site_Kit_Dependencies\Google_Service_GoogleAnalyticsAdmin_GoogleAnalyticsAdminV1alphaIosAppDataStream $postBody, $optParams = array())
-    {
-        $params = array('parent' => $parent, 'postBody' => $postBody);
-        $params = \array_merge($params, $optParams);
-        return $this->call('create', array($params), "Google\Site_Kit_Dependencies\Google_Service_GoogleAnalyticsAdmin_GoogleAnalyticsAdminV1alphaIosAppDataStream");
-    }
-    /**
      * Deletes an iOS app stream on a property. (iosAppDataStreams.delete)
      *
      * @param string $name Required. The name of the iOS app data stream to delete.
@@ -109,8 +93,9 @@ class Google_Service_GoogleAnalyticsAdmin_Resource_PropertiesIosAppDataStreams e
      * @param array $optParams Optional parameters.
      *
      * @opt_param string updateMask Required. The list of fields to be updated.
-     * Omitted fields will not be updated. To replace the entire entity, use one
-     * path with the string "*" to match all fields.
+     * Field names must be in snake case (e.g., "field_to_update"). Omitted fields
+     * will not be updated. To replace the entire entity, use one path with the
+     * string "*" to match all fields.
      * @return Google_Service_GoogleAnalyticsAdmin_GoogleAnalyticsAdminV1alphaIosAppDataStream
      */
     public function patch($name, \Google\Site_Kit_Dependencies\Google_Service_GoogleAnalyticsAdmin_GoogleAnalyticsAdminV1alphaIosAppDataStream $postBody, $optParams = array())

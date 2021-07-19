@@ -1,4 +1,4 @@
-/*! elementor - v3.2.4 - 26-05-2021 */
+/*! elementor - v3.3.0 - 11-07-2021 */
 (self["webpackChunkelementor"] = self["webpackChunkelementor"] || []).push([["counter"],{
 
 /***/ "../assets/dev/js/frontend/handlers/counter.js":
