@@ -1,4 +1,4 @@
-/*! elementor - v3.4.0 - 15-08-2021 */
+/*! elementor - v3.4.5 - 12-10-2021 */
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
@@ -7532,7 +7532,13 @@ ControlBaseDataView = ControlBaseView.extend({
    * @returns {*}
    */
   getControlPlaceholder: function getControlPlaceholder() {
-    return this.container.placeholders[this.model.get('name')];
+    var placeholder = this.model.get('placeholder');
+
+    if (this.model.get('responsive')) {
+      placeholder = placeholder || this.container.placeholders[this.model.get('name')];
+    }
+
+    return placeholder;
   },
 
   /**
@@ -7584,9 +7590,7 @@ ControlBaseDataView = ControlBaseView.extend({
     var parent = this.getResponsiveParentView();
 
     if (parent) {
-      var placeholder = parent.preparePlaceholderForChildren();
-      this.container.placeholders[this.model.get('name')] = placeholder;
-      this.model.set('placeholder', placeholder);
+      this.container.placeholders[this.model.get('name')] = parent.preparePlaceholderForChildren();
     }
   },
 
@@ -7606,14 +7610,13 @@ ControlBaseDataView = ControlBaseView.extend({
     var _this$getResponsivePa;
 
     var cleanValue = this.getCleanControlValue(),
-        parentValue = (_this$getResponsivePa = this.getResponsiveParentView()) === null || _this$getResponsivePa === void 0 ? void 0 : _this$getResponsivePa.preparePlaceholderForChildren(),
-        placeholder = this.model.get('placeholder');
+        parentValue = (_this$getResponsivePa = this.getResponsiveParentView()) === null || _this$getResponsivePa === void 0 ? void 0 : _this$getResponsivePa.preparePlaceholderForChildren();
 
     if (cleanValue instanceof Object) {
-      return (0, _assign.default)({}, placeholder, parentValue, cleanValue);
+      return (0, _assign.default)({}, parentValue, cleanValue);
     }
 
-    return cleanValue || parentValue || placeholder;
+    return cleanValue || parentValue;
   },
 
   /**
@@ -9200,6 +9203,10 @@ module.exports = ControlSelect2View.extend({
 /* provided dependency */ var __ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n")["__"];
 
 
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime-corejs2/helpers/interopRequireDefault */ "../node_modules/@babel/runtime-corejs2/helpers/interopRequireDefault.js");
+
+var _filesUploadHandler = _interopRequireDefault(__webpack_require__(/*! ../utils/files-upload-handler */ "../assets/dev/js/editor/utils/files-upload-handler.js"));
+
 var ControlBaseDataView = __webpack_require__(/*! elementor-controls/base-data */ "../assets/dev/js/editor/controls/base-data.js"),
     ControlMediaItemView;
 
@@ -9248,7 +9255,11 @@ ControlMediaItemView = ControlBaseDataView.extend({
   },
   openFrame: function openFrame(action) {
     this.initFrame(action);
-    this.frame.open();
+    this.frame.open(); // Set params to trigger sanitizer
+
+    if (_filesUploadHandler.default.isUploadEnabled('svg')) {
+      _filesUploadHandler.default.setUploadTypeCaller(this.frame);
+    }
   },
   initFrame: function initFrame(action) {
     var frameStates = {
@@ -9269,13 +9280,29 @@ ControlMediaItemView = ControlBaseDataView.extend({
       options.selection = this.fetchSelection();
     }
 
-    this.frame = wp.media(options); // When a file is selected, run a callback.
+    this.frame = wp.media(options);
+    this.addSvgMimeType(); // When a file is selected, run a callback.
 
     this.frame.on({
       update: this.select,
       'menu:render:default': this.menuRender,
       'content:render:browse': this.gallerySettings
     }, this);
+  },
+  addSvgMimeType: function addSvgMimeType() {
+    if (!_filesUploadHandler.default.isUploadEnabled('svg')) {
+      return;
+    } // Add the SVG to the currently allowed extensions
+
+
+    var oldExtensions = _wpPluploadSettings.defaults.filters.mime_types[0].extensions;
+    this.frame.on('ready', function () {
+      _wpPluploadSettings.defaults.filters.mime_types[0].extensions = oldExtensions + ',svg';
+    }); // restore allowed upload extensions
+
+    this.frame.on('close', function () {
+      _wpPluploadSettings.defaults.filters.mime_types[0].extensions = oldExtensions;
+    });
   },
   menuRender: function menuRender(view) {
     view.unset('insert');
@@ -13661,14 +13688,18 @@ var EditorBase = /*#__PURE__*/function (_Marionette$Applicati) {
           controlConfig.desktop_default = controlConfig.default;
         }
 
-        var multipleDefaultValue = _this10.config.controls[controlConfig.type].default_value; // For multiple controls that implement get_default_value() in the control class, make sure the duplicated
+        var multipleDefaultValue = _this10.config.controls[controlConfig.type].default_value;
+        var deleteControlDefault = true; // For multiple controls that implement get_default_value() in the control class, make sure the duplicated
         // controls receive that default value.
 
         if (multipleDefaultValue) {
           controlConfig.default = multipleDefaultValue;
+          deleteControlDefault = false;
         }
 
         devices.forEach(function (device, index) {
+          var _controlArgs$popover;
+
           var controlArgs = elementorCommon.helpers.cloneObject(controlConfig);
 
           if (controlArgs.device_args) {
@@ -13716,8 +13747,18 @@ var EditorBase = /*#__PURE__*/function (_Marionette$Applicati) {
             } else {
               controlArgs.default = controlArgs[device + '_default'];
             }
-          } // If the control belongs to a group control with a popover, and this control is the last one, add the
-          // popover.end = true value to it to make sure it closes the popover.
+          } else if (deleteControlDefault) {
+            // In the Editor, controls without default values should have an empty string as the default value.
+            controlArgs.default = '';
+          } // If the control is the first inside a popover, only the first device starts the popover,
+          // so the 'start' property has to be deleted from all other devices.
+
+
+          if (0 !== index && (_controlArgs$popover = controlArgs.popover) !== null && _controlArgs$popover !== void 0 && _controlArgs$popover.start) {
+            delete controlArgs.popover.start;
+          } // If the control is inside a popover, AND this control is the last one in the popover, AND this is the
+          // last device in the devices array - add the 'popover.end = true' value to it to make sure it closes
+          // the popover.
 
 
           if (index === devices.length - 1 && popoverEndProperty) {
@@ -21805,6 +21846,10 @@ exports.default = ColorPicker;
 "use strict";
 
 
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime-corejs2/helpers/interopRequireDefault */ "../node_modules/@babel/runtime-corejs2/helpers/interopRequireDefault.js");
+
+var _typeof2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/helpers/typeof */ "../node_modules/@babel/runtime-corejs2/helpers/typeof.js"));
+
 __webpack_require__(/*! core-js/modules/es6.regexp.match.js */ "../node_modules/core-js/modules/es6.regexp.match.js");
 
 __webpack_require__(/*! core-js/modules/es6.function.name.js */ "../node_modules/core-js/modules/es6.function.name.js");
@@ -21872,7 +21917,7 @@ Conditions = function Conditions() {
         // A term consists of a control name to be examined, and a sub key if needed. For example, a term
         // can look like 'image_overlay[url]' (the 'url' is the sub key). Here we want to isolate the
         // condition name and the sub key, so later it can be retrieved and examined.
-        var parsedName = term.name.match(/(\w+)(?:\[(\w+)])?/),
+        var parsedName = term.name.match(/([\w-]+)(?:\[([\w-]+)])?/),
             conditionRealName = parsedName[1],
             conditionSubKey = parsedName[2],
             // We use null-safe operator since we're trying to get the current element, which is not always
@@ -21886,7 +21931,7 @@ Conditions = function Conditions() {
           value = comparisonObject.__dynamic__[conditionRealName];
         }
 
-        if (value && conditionSubKey) {
+        if ('object' === (0, _typeof2.default)(value) && conditionSubKey) {
           value = value[conditionSubKey];
         }
 
@@ -23133,7 +23178,7 @@ module.exports = {
         // Here we want to convert the 'condition' format to a 'conditions' format. The first step is to
         // isolate the term from the negative operator if exists. For example, a condition format can look
         // like 'selected_icon[value]!', so we examine this term with a negative connotation.
-        var conditionNameParts = conditionName.match(/(\w+(?:\[\w+])?)?(!?)$/i),
+        var conditionNameParts = conditionName.match(/([\w-]+(?:\[[\w-]+])?)?(!?)$/i),
             conditionRealName = conditionNameParts[1],
             isNegativeCondition = !!conditionNameParts[2],
             controlValue = values[conditionRealName];
