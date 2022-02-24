@@ -3,7 +3,7 @@ Contributors: Backup with UpdraftPlus, DavidAnderson, DNutbourne, aporter, snigh
 Tags: backup, restore, database backup, wordpress backup, cloud backup, s3, dropbox, google drive, onedrive, ftp, backups
 Requires at least: 3.2
 Tested up to: 5.9
-Stable tag: 1.22.3
+Stable tag: 1.22.4
 Author URI: https://updraftplus.com
 Donate link: https://david.dw-perspective.org.uk/donate
 License: GPLv3 or later
@@ -170,9 +170,15 @@ N.B. Paid versions of UpdraftPlus Backup / Restore have a version number which i
 
 
 
+
+= 1.22.4 - 17/Feb/2022 =
+
+* TWEAK: Prevent a couple of possible fatal errors when printing autobackup options on PHP 8
+* TWEAK: Work around a bug in the JetPack autoloader that was triggered when projects using that also used Guzzle in a different namespace
+
 = 1.22.3 - 15/Feb/2022 =
 
-* SECURITY: Thanks to Marc-Alexandre Montpas of Automattic for this report. All versions of UpdraftPlus from March 2019 onwards have contained a vulnerability caused by a missing permissions-level check. If your site does not have non-admin users, or if your non-admin users are all trusted (and your site does not allow users to sign up themselves), then you are not vulnerable (but we always recommend updating to the latest version in any case). Fuller details will be released after a short time interval allowing users to update.
+* SECURITY: Thanks to Marc-Alexandre Montpas of Automattic for this report (CVE: CVE-2022-23303). All versions of UpdraftPlus from March 2019 onwards have contained a vulnerability caused by a missing permissions-level check, allowing untrusted users access to backups. If your site does not have non-admin users, or if your non-admin users are all trusted (and your site does not allow users to sign up themselves), then you are not vulnerable (but we always recommend updating to the latest version in any case). Please see https://updraftplus.com/updraftplus-security-release-1-22-3-2-22-3/ for more details.
 * FIX: Unexpected 'Backup History' array structure during the rescanning of the new backup sets that changed the type of the database associative keys from string to array format
 * FIX: Failure in excluding and wiping out jobdata during backup and restore causing the same backup to repeat under certain circumstances
 * REFACTOR: Upgrade AWS SDK from version 2.8 to 3
@@ -1451,4 +1457,4 @@ Reliance upon any non-English translation is at your own risk; UpdraftPlus can g
 We recognise and thank those mentioned at https://updraftplus.com/acknowledgements/ for code and/or libraries used and/or modified under the terms of their open source licences.
 
 == Upgrade Notice ==
-* 1.22.3: Fixes a security issue (see the changelog for more info). Fix potential issues with scanning of backup history. Update AWS SDK version. Various other small tweaks and fixes. A recommended update for all.
+* 1.22.4: Fixes a conflict with plugins using guzzlehttp 6/7 and with a buggy JetPack autloader. N.B. 1.22.3 fixed a security issue (see the changelog for more info) on sites that have non-trusted logins. A recommended update for all.
