@@ -540,6 +540,8 @@ abstract class Base_App {
 			'utm_campaign',
 			'utm_term',
 			'utm_content',
+			'source',
+			'screen_hint',
 		];
 
 		$query_params = ( new Collection( $_GET ) ) // phpcs:ignore
@@ -587,10 +589,6 @@ abstract class Base_App {
 	 * @access protected
 	 */
 	protected function set_client_id() {
-		if ( $this->get( 'client_id' ) ) {
-			return;
-		}
-
 		$response = $this->request(
 			'get_client_id',
 			[
