@@ -4,7 +4,7 @@ Contributors:      google
 Requires at least: 5.2
 Tested up to:      6.5
 Requires PHP:      5.6
-Stable tag:        1.123.0
+Stable tag:        1.124.0
 License:           Apache License 2.0
 License URI:       https://www.apache.org/licenses/LICENSE-2.0
 Tags:              google, search-console, analytics, adsense, pagespeed-insights
@@ -109,29 +109,38 @@ Please create a new topic on our [WordPress.org support forum](https://wordpress
 
 == Changelog ==
 
-= 1.123.0 =
+= 1.124.0 =
 
 **Added**
 
-* Add Analytics events to AdSense + Analytics success notification. See [#8214](https://github.com/google/site-kit-wp/issues/8214).
-* Add a cron task to synchronize the AdSense linked state for GA4 in the background. See [#8049](https://github.com/google/site-kit-wp/issues/8049).
+* Add setup flow to Ads Module. See [#8346](https://github.com/google/site-kit-wp/issues/8346).
+* Add the web tag for the Ads module. See [#8313](https://github.com/google/site-kit-wp/issues/8313).
+* Add the Conversion Tracking ID field to the Ads module's Setup and Settings screens. See [#8251](https://github.com/google/site-kit-wp/issues/8251).
+* Add Site Health information for the Ads module. See [#8245](https://github.com/google/site-kit-wp/issues/8245).
+* Add a notification for users who have linked AdSense and Analytics accounts when data becomes available to view in their dashboard. See [#8237](https://github.com/google/site-kit-wp/issues/8237).
+* Add Analytics events to AdSense + Analytics notification. See [#8213](https://github.com/google/site-kit-wp/issues/8213).
 
 **Enhanced**
 
-* Display overlay notification to prompt AdSense + Analytics 4 users to link their accounts. See [#8236](https://github.com/google/site-kit-wp/issues/8236).
-* Add a left-hand spinner variant of the `SpinnerButton` component. See [#8163](https://github.com/google/site-kit-wp/issues/8163).
-* Add the Audience Segmentation Info Notice as a component in Storybook. See [#8137](https://github.com/google/site-kit-wp/issues/8137).
-* Migrate settings from the legacy to the new Analytics module. See [#8082](https://github.com/google/site-kit-wp/issues/8082).
-* Replace the legacy `analytics` module with `analytics-4`. See [#7932](https://github.com/google/site-kit-wp/issues/7932).
+* Update Consent Mode messaging to mention the UK as well as the EEA. See [#8443](https://github.com/google/site-kit-wp/issues/8443).
+* Update wording for sites with existing Analytics tags. See [#8405](https://github.com/google/site-kit-wp/issues/8405).
+* Add placeholder/prefix to the Conversion Tracking ID field in the Ads module. See [#8398](https://github.com/google/site-kit-wp/issues/8398).
+* Add a linked Ads account as an option to surface Consent Mode features. See [#8382](https://github.com/google/site-kit-wp/issues/8382).
+* Update Analytics to use new gtag infrastructure. See [#8273](https://github.com/google/site-kit-wp/issues/8273).
+* Add decoupled infrastructure for GTag. See [#8269](https://github.com/google/site-kit-wp/issues/8269).
+* Add a settings toggle for Audience Segmentation. See [#8177](https://github.com/google/site-kit-wp/issues/8177).
+* Introduce infrastructure for managing Audience settings. See [#8176](https://github.com/google/site-kit-wp/issues/8176).
+* Add the Audience Tile in its "happy path" state as a component which is viewable in Storybook. See [#8135](https://github.com/google/site-kit-wp/issues/8135).
+* Enhance Web Data Stream creation in Analytics setup and settings screens to allow using custom web data stream name. See [#6727](https://github.com/google/site-kit-wp/issues/6727).
+* Improve "Retry" behavior on All Traffic Widget. See [#6406](https://github.com/google/site-kit-wp/issues/6406).
 
 **Changed**
 
-* Refactor Site Kit to use a singular Analytics module. See [#8306](https://github.com/google/site-kit-wp/issues/8306).
-* Remove the legacy `analytics` module (UA) from Site Kit. See [#7843](https://github.com/google/site-kit-wp/issues/7843).
+* Migrate the Ads Conversion ID field from the Analytics module to the Ads module. See [#8248](https://github.com/google/site-kit-wp/issues/8248).
 
 **Fixed**
 
-* Fix a bug that prevented "Set up Google Analytics" step from appearing in Site Kit setup flow. See [#8397](https://github.com/google/site-kit-wp/issues/8397).
-* Fix bug that could cause the "Enable automatic updates" banner to appear then disappear briefly when the user has a slow internet connection. See [#8235](https://github.com/google/site-kit-wp/issues/8235).
+* Fix bug that caused Top Earning Pages widget to show links in shared dashboard. See [#8451](https://github.com/google/site-kit-wp/issues/8451).
+* Fix bug that caused browser console error to appear when changing Tag Manager account in Tag Manager setup/settings. See [#8316](https://github.com/google/site-kit-wp/issues/8316).
 
 [See changelog for all versions](https://raw.githubusercontent.com/google/site-kit-wp/main/changelog.txt).
